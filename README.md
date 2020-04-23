@@ -1,4 +1,4 @@
-# Angular Event Listener Service
+# Angular EventListener Service
 
 This service makse all your event listeners using one centralized instance. You can keep track on what listeners you have at the moment and any future changes will go through just one place! And it won't trigger change detection on every event!
 
