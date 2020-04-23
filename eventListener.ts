@@ -4,7 +4,7 @@ import { Injectable, NgZone } from '@angular/core';
   providedIn: 'root',
 })
 
-export class eventListener {
+export class eventListenerService {
   constructor(
     private zone: NgZone
   ) { }
