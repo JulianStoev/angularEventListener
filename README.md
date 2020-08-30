@@ -4,68 +4,49 @@ This service makse all your event listeners using one centralized instance. You 
 
 ### Example usage
 
+Make the needed imports
 ```
 import { eventListenerService } from 'eventListener.service';
-import { Component, NgZone } from '@angular/core';
+import { NgZone } from '@angular/core';
+```
 
-export class MyComponent {
-  
-  constructor(
-    private eventListener: eventListenerService,
-    private ngzone: NgZone
-  ) { }
-  
-  public onScroll = (e:Event):void => {
-    console.log(e);
-    if (true) {
-      this.ngzone.run(() => {
-        // do something
-      });
-    }
-  }
-  
-  public onKeyup = (e:Event):void => {
-    console.log(e);
-    // no ngzone.run because I am not changing anything 
-    // or I am accessing an html element directly
-  }
-  
-  ngOnInit() {
-    this.eventListener.listen({
-      type: 'scroll',
-      name: 'scrollScreen',
-      callback: this.onScroll
-    });
-    
-    this.tools.eventListener.listen({
-      type: 'keyup',
-      name: 'keyUp',
-      callback: this.onKeyup,
-      el: document
-    });
-  }
-  
-  ngOnDestroy() {
-    this.eventListener.remove({
-      type: 'scroll',
-      name: 'scrollScreen'
-    });
-    
-    this.tools.eventListener.listen({
-      type: 'keyup',
-      name: 'keyUp',
-      el: document
-    });
-  }
+Add a listener
+```
+this.eventListener.listen({
+  type: 'scroll', // the type of the event, eg scroll/resize/keyup...
+  name: 'scrollScreen', // a friendly name
+  callback: this.onScroll // callback
+});
+```
 
+Handle the callback when the event has occured
+```
+public onScroll = (e:Event):void => {
+  // check if your logic has been met
+  if (true) {
+    // and if true, use NgZone's run method to make your changes available in Angular
+    this.ngzone.run(() => {
+      // do something
+    });
+  }
+}
+```
+
+Remove the listener onDestroy
+```
+ngOnDestroy() {
+  this.eventListener.remove({
+    type: 'scroll',
+    name: 'scrollScreen'
+  });
 }
 ```
 
 1. type: the event type to listen for, eg scroll, keyup, resize...
 2. name: a friendly name that you can recognize when you check your active event listeners
-3. el: an element to listen on, if el isn't specified the event listener will apply by default on window
+3. el: an element to listen on, if el isn't specified the event listener will be applied by default on Window
 
-Because the service runs the events outside of angular in order to avoid change detection, on every scroll for example, when the event has fired if you need to change a variable you need to run it in ngzone.run() in order to get back in Angular. Else Angular will find out about your changes on the next accidental change detection.
+Because the service runs the events outside of angular in order to avoid change detection, on every scroll for example, when the event has fired up if you need to change a variable you need to run it in ngzone.run() in order to get back in Angular. Otherwise Angular will find out about your changes on the next accidental change detection.
 
 You can benefit most if you have many event listeners on window and document, it might be better to use standart eventListener for custom elements that appear just once somewhere and the listener/element is destroyed shortly after.
 
