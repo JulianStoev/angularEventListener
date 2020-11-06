@@ -43,10 +43,10 @@ export class EventListenerService {
   public listen(data:listenInterface):void {
     if (!this.data.callbacks[data.type]) {
       this.data.callbacks[data.type] = <Function>{};
-      this.ngzone.runOutsideAngular(() => {
-        (data.el || window).addEventListener(data.type, this.data.action, data.opts ? data.opts : {passive: true});
-      });
     }
+    this.ngzone.runOutsideAngular(() => {
+      (data.el || window).addEventListener(data.type, this.data.action, data.opts ? data.opts : {passive: true});
+    });
     this.data.callbacks[data.type][data.name] = data.callback;
   }
 
